@@ -143,7 +143,10 @@ Order by descending cost, and do not use any subqueries. */
 
 SELECT CONCAT_WS(' ',Members.firstname,Members.surname) as fullname,
 		Facilities.name AS facilityname,
-		(Facilities.membercost + Facilities.guestcost) * Bookings.slots AS cost 
+		CASE WHEN Bookings.memid<>0 
+        THEN Facilities.guestcost * Bookings.slots
+		ELSE Facilities.membercost * Bookings.slots
+		END AS cost
 FROM Bookings
     INNER JOIN Facilities ON Facilities.facid = Bookings.facid
     INNER JOIN Members ON Members.memid = Bookings.memid
